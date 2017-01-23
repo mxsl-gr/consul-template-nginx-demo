@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+  consul-server:
+    image: consul
+    ports:
+      - "8500:8500"
+  test-server1:
+    build:
+      context: .
+      dockerfile: test-server.Dockerfile
+    environment: 
+      SERVER_NAME: test1
+  test-server2:
+    build:
+      context: .
+      dockerfile: test-server.Dockerfile
+    environment: 
+      SERVER_NAME: test2
+  consul-template-nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    links:
+      - test-server1
+      - test-server2
+      - consul-server
